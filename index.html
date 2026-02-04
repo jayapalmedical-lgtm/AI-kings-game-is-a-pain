@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Bujju AI Games</title>
+<title>Dhradheesh.j AI Games</title>
 <style>
-body{font-family:Arial;text-align:center;background:#eef}
-button{padding:10px;margin:5px;font-size:16px}
-.game{display:none;margin-top:20px}
-table{margin:auto;border-collapse:collapse}
-td{width:60px;height:60px;border:2px solid black;font-size:28px;cursor:pointer}
+body{font-family:Arial;text-align:center;background:#eef;}
+button{padding:10px;margin:5px;font-size:16px;}
+.game{display:none;margin-top:20px;}
+table{margin:auto;border-collapse:collapse;}
+td{width:60px;height:60px;border:2px solid black;font-size:28px;cursor:pointer;text-align:center;}
+h1,h2{margin:5px;}
 </style>
 </head>
-
 <body>
 
-<h1>🎮 Bujju’s AI Game Hub</h1>
+<h1>🎮 Dhradheesh.j AI Game Hub</h1>
 <p>School Project</p>
 
 <button onclick="show('number')">🔢 Guess My Number</button>
@@ -21,7 +21,7 @@ td{width:60px;height:60px;border:2px solid black;font-size:28px;cursor:pointer}
 <button onclick="show('ttt')">❌⭕ Tic Tac Toe</button>
 <button onclick="show('quiz')">🧠 Quiz</button>
 
-<!-- ========== GUESS MY NUMBER ========== -->
+<!-- ===== GUESS MY NUMBER ===== -->
 <div id="number" class="game">
 <h2>AI Guess My Number</h2>
 <p>Think of a number between <b>1 and 100</b></p>
@@ -31,14 +31,14 @@ td{width:60px;height:60px;border:2px solid black;font-size:28px;cursor:pointer}
 <button onclick="high()">Too High</button>
 </div>
 
-<!-- ========== CASUAL CHESS ========== -->
+<!-- ===== CASUAL CHESS ===== -->
 <div id="chess" class="game">
 <h2>Casual Chess (You vs AI)</h2>
 <p>White = You | Black = AI</p>
 <table id="chessBoard"></table>
 </div>
 
-<!-- ========== TIC TAC TOE ========== -->
+<!-- ===== TIC TAC TOE ===== -->
 <div id="ttt" class="game">
 <h2>Tic Tac Toe</h2>
 <table>
@@ -49,9 +49,9 @@ td{width:60px;height:60px;border:2px solid black;font-size:28px;cursor:pointer}
 <p id="tttResult"></p>
 </div>
 
-<!-- ========== QUIZ ========== -->
+<!-- ===== QUIZ ===== -->
 <div id="quiz" class="game">
-<h2>Quiz (Class 8–9)</h2>
+<h2>Quiz (Class 7–9)</h2>
 <p id="question"></p>
 <button onclick="answer(true)">True</button>
 <button onclick="answer(false)">False</button>
@@ -59,20 +59,20 @@ td{width:60px;height:60px;border:2px solid black;font-size:28px;cursor:pointer}
 </div>
 
 <script>
-/* MENU */
+/* ===== MENU ===== */
 function show(id){
-document.querySelectorAll('.game').forEach(g=>g.style.display="none");
-document.getElementById(id).style.display="block";
+ document.querySelectorAll('.game').forEach(g=>g.style.display="none");
+ document.getElementById(id).style.display="block";
 }
 
-/* ========== GUESS MY NUMBER AI ========== */
+/* ===== GUESS MY NUMBER AI ===== */
 let lo=1, hi=100, g=50;
 function update(){g=Math.floor((lo+hi)/2);document.getElementById("guess").innerText=g;}
 function low(){lo=g+1;update();}
 function high(){hi=g-1;update();}
 function correct(){alert("🎉 AI guessed your number: "+g);}
 
-/* ========== CASUAL CHESS ========== */
+/* ===== CASUAL CHESS ===== */
 let chess=[
 ["♜","♞","♝","♛","♚","♝","♞","♜"],
 ["♟","♟","♟","♟","♟","♟","♟","♟"],
@@ -84,96 +84,159 @@ let chess=[
 ["♖","♘","♗","♕","♔","♗","♘","♖"]
 ];
 let sel=null;
-
 function drawChess(){
-let t="";
-for(let r=0;r<8;r++){
-t+="<tr>";
-for(let c=0;c<8;c++)
-t+=<td onclick="pick(${r},${c})">${chess[r][c]}</td>;
-t+="</tr>";
-}
-document.getElementById("chessBoard").innerHTML=t;
+ let t="";
+ for(let r=0;r<8;r++){
+   t+="<tr>";
+   for(let c=0;c<8;c++){
+     t+=<td onclick="pick(${r},${c})">${chess[r][c]}</td>;
+   }
+   t+="</tr>";
+ }
+ document.getElementById("chessBoard").innerHTML=t;
 }
 drawChess();
 
 function pick(r,c){
-if(!sel && chess[r][c]!=""){sel=[r,c];}
-else if(sel){
-chess[r][c]=chess[sel[0]][sel[1]];
-chess[sel[0]][sel[1]]="";
-sel=null;
-drawChess();
-setTimeout(aiChess,500);
-}
+ if(!sel && chess[r][c]!=""){sel=[r,c];}
+ else if(sel){
+   chess[r][c]=chess[sel[0]][sel[1]];
+   chess[sel[0]][sel[1]]="";
+   sel=null;
+   drawChess();
+   setTimeout(aiChess,500);
+ }
 }
 
+// Smarter Chess AI: captures pieces if possible
 function aiChess(){
-let p=[];
-for(let r=0;r<8;r++)
-for(let c=0;c<8;c++)
-if(chess[r][c]!="")p.push([r,c]);
-let a=p[Math.floor(Math.random()*p.length)];
-let r=a[0],c=a[1];
-let nr=Math.max(0,Math.min(7,r+(Math.random()>0.5?1:-1)));
-let nc=Math.max(0,Math.min(7,c+(Math.random()>0.5?1:-1)));
-chess[nr][nc]=chess[r][c];
-chess[r][c]="";
-drawChess();
+ let moves=[];
+ for(let r=0;r<8;r++){
+   for(let c=0;c<8;c++){
+     if(chess[r][c]!="" && chess[r][c].match(/[♟♜♞♝♛♚]/)){
+       // try move in 1 step directions
+       let dirs=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
+       for(let [dr,dc] of dirs){
+         let nr=r+dr, nc=c+dc;
+         if(nr>=0 && nr<8 && nc>=0 && nc<8){
+           moves.push({from:[r,c],to:[nr,nc]});
+         }
+       }
+     }
+   }
+ }
+ if(moves.length==0) return;
+ // prioritize captures
+ for(let m of moves){
+   let tr=m.to[0], tc=m.to[1];
+   if(chess[tr][tc]!="" && chess[tr][tc].match(/[♙♖♘♗♕♔]/)){
+     chess[tr][tc]=chess[m.from[0]][m.from[1]];
+     chess[m.from[0]][m.from[1]]="";
+     drawChess();
+     return;
+   }
+ }
+ // else random move
+ let m=moves[Math.floor(Math.random()*moves.length)];
+ chess[m.to[0]][m.to[1]]=chess[m.from[0]][m.from[1]];
+ chess[m.from[0]][m.from[1]]="";
+ drawChess();
 }
 
-/* ========== TIC TAC TOE ========== */
+/* ===== TIC TAC TOE ===== */
 let board=["","","","","","","","",""];
 let over=false;
 const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 
 function playTTT(i){
-if(board[i]||over)return;
-board[i]="X";drawTTT();
-if(check("X")){end("🎉 You Win!");return;}
-aiTTT();
-if(check("O")){end("🤖 AI Wins!");return;}
-if(!board.includes(""))end("🤝 Draw!");
+ if(board[i]||over)return;
+ board[i]="X";drawTTT();
+ if(check("X")){end("🎉 You Win!");return;}
+ aiTTT();
+ if(check("O")){end("🤖 AI Wins!");return;}
+ if(!board.includes(""))end("🤝 Draw!");
 }
 
+// Smart Tic Tac Toe AI
 function aiTTT(){
-let e=board.map((v,i)=>v==""?i:null).filter(v=>v!=null);
-if(e.length)board[e[Math.floor(Math.random()*e.length)]]="O";
-drawTTT();
+  // Step 1: Win if possible
+  for(let i=0;i<board.length;i++){
+    if(board[i]==""){
+      board[i]="O";
+      if(check("O")){drawTTT(); return;}
+      board[i]="";
+    }
+  }
+  // Step 2: Block player
+  for(let i=0;i<board.length;i++){
+    if(board[i]==""){
+      board[i]="X";
+      if(check("X")){board[i]="O"; drawTTT(); return;}
+      board[i]="";
+    }
+  }
+  // Step 3: Random move
+  let e=board.map((v,i)=>v==""?i:null).filter(v=>v!=null);
+  if(e.length) board[e[Math.floor(Math.random()*e.length)]="O";
+  drawTTT();
 }
 
 function drawTTT(){
-document.querySelectorAll("#ttt td").forEach((c,i)=>c.innerText=board[i]);
+ document.querySelectorAll("#ttt td").forEach((c,i)=>c.innerText=board[i]);
 }
 
 function check(p){return wins.some(w=>w.every(i=>board[i]==p));}
 function end(t){document.getElementById("tttResult").innerText=t;over=true;}
 
-/* ========== QUIZ (100+) ========== */
+/* ===== QUIZ (7–9 standard, 100+ questions) ===== */
 let base=[
-["Speed of light is 3×10⁸ m/s",true],
-["Ohm’s law is V=IR",true],
-["RAM is permanent memory",false],
-["pH of acids is less than 7",true],
-["Binary number system uses base 2",true],
-["CPU is brain of computer",true],
+["The Earth revolves around the Sun",true],
+["Water boils at 0°C",false],
 ["Sound cannot travel in vacuum",true],
-["Water boils at 100°C",true],
-["LAN means Local Area Network",true],
-["Earth has two moons",false]
+["Humans have 2 lungs",true],
+["Lightning is hotter than the Sun",true],
+["The chemical symbol of water is H2O",true],
+["The Moon is a planet",false],
+["Plants make food using sunlight",true],
+["The speed of light is 3x10^8 m/s",true],
+["The human heart has 4 chambers",true],
+["Sharks are mammals",false],
+["Python is a programming language",true],
+["India's capital is New Delhi",true],
+["Blood is red",true],
+["Earth has one moon",true],
+["Saturn has rings",true],
+["Cows lay eggs",false],
+["Gold is a metal",true],
+["Venus is called the morning star",true],
+["Humans have 5 fingers on each hand",true],
+["Lightning is electricity",true],
+["The Pacific Ocean is the largest",true],
+["Rain is a form of precipitation",true],
+["Binary uses base 2",true],
+["CPU is brain of computer",true],
+["RAM is volatile memory",true],
+["The Nile is the longest river",true],
+["Earth rotates on its axis",true],
+["Plants produce oxygen",true],
+["Electricity flows through conductors",true]
 ];
+
+// Randomly create 100+ questions
 let q=[];
-while(q.length<100)q.push(base[Math.floor(Math.random()*base.length)]);
+while(q.length<100) q.push(base[Math.floor(Math.random()*base.length)]);
 let qi=0, sc=0;
 document.getElementById("question").innerText=q[0][0];
 
 function answer(a){
-if(a==q[qi][1])sc++;
-qi++;
-document.getElementById("question").innerText=q[qi][0];
-document.getElementById("score").innerText="Score: "+sc+"/"+qi;
+ if(a==q[qi][1]) sc++;
+ qi++;
+ if(qi>=q.length){alert("Quiz Finished! Score: "+sc+"/"+q.length); qi=0; sc=0;}
+ document.getElementById("question").innerText=q[qi][0];
+ document.getElementById("score").innerText="Score: "+sc+"/"+qi;
 }
 </script>
 
 </body>
 </html>
+
