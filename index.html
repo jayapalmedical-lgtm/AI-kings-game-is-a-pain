@@ -65,11 +65,11 @@ function show(id){
  document.getElementById(id).style.display="block";
 }
 
-/* ===== GUESS MY NUMBER AI ===== */
+/* ===== GUESS MY NUMBER ===== */
 let lo=1, hi=100, g=50;
-function update(){g=Math.floor((lo+hi)/2);document.getElementById("guess").innerText=g;}
-function low(){lo=g+1;update();}
-function high(){hi=g-1;update();}
+function update(){g=Math.floor((lo+hi)/2); document.getElementById("guess").innerText=g;}
+function low(){lo=g+1; update();}
+function high(){hi=g-1; update();}
 function correct(){alert("🎉 AI guessed your number: "+g);}
 
 /* ===== CASUAL CHESS ===== */
@@ -84,6 +84,7 @@ let chess=[
 ["♖","♘","♗","♕","♔","♗","♘","♖"]
 ];
 let sel=null;
+
 function drawChess(){
  let t="";
  for(let r=0;r<8;r++){
@@ -108,13 +109,12 @@ function pick(r,c){
  }
 }
 
-// Smarter Chess AI: captures pieces if possible
+// Smarter Chess AI: capture if possible
 function aiChess(){
  let moves=[];
  for(let r=0;r<8;r++){
    for(let c=0;c<8;c++){
      if(chess[r][c]!="" && chess[r][c].match(/[♟♜♞♝♛♚]/)){
-       // try move in 1 step directions
        let dirs=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
        for(let [dr,dc] of dirs){
          let nr=r+dr, nc=c+dc;
@@ -136,7 +136,6 @@ function aiChess(){
      return;
    }
  }
- // else random move
  let m=moves[Math.floor(Math.random()*moves.length)];
  chess[m.to[0]][m.to[1]]=chess[m.from[0]][m.from[1]];
  chess[m.from[0]][m.from[1]]="";
@@ -150,45 +149,31 @@ const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 
 function playTTT(i){
  if(board[i]||over)return;
- board[i]="X";drawTTT();
- if(check("X")){end("🎉 You Win!");return;}
+ board[i]="X"; drawTTT();
+ if(check("X")){end("🎉 You Win!"); return;}
  aiTTT();
- if(check("O")){end("🤖 AI Wins!");return;}
- if(!board.includes(""))end("🤝 Draw!");
+ if(check("O")){end("🤖 AI Wins!"); return;}
+ if(!board.includes("")) end("🤝 Draw!");
 }
 
 // Smart Tic Tac Toe AI
 function aiTTT(){
-  // Step 1: Win if possible
   for(let i=0;i<board.length;i++){
-    if(board[i]==""){
-      board[i]="O";
-      if(check("O")){drawTTT(); return;}
-      board[i]="";
-    }
+    if(board[i]==""){board[i]="O"; if(check("O")){drawTTT(); return;} board[i]="";}
   }
-  // Step 2: Block player
   for(let i=0;i<board.length;i++){
-    if(board[i]==""){
-      board[i]="X";
-      if(check("X")){board[i]="O"; drawTTT(); return;}
-      board[i]="";
-    }
+    if(board[i]==""){board[i]="X"; if(check("X")){board[i]="O"; drawTTT(); return;} board[i]="";}
   }
-  // Step 3: Random move
   let e=board.map((v,i)=>v==""?i:null).filter(v=>v!=null);
-  if(e.length) board[e[Math.floor(Math.random()*e.length)]="O";
+  if(e.length) board[e[Math.floor(Math.random()*e.length)]]="O";
   drawTTT();
 }
 
-function drawTTT(){
- document.querySelectorAll("#ttt td").forEach((c,i)=>c.innerText=board[i]);
-}
-
+function drawTTT(){document.querySelectorAll("#ttt td").forEach((c,i)=>c.innerText=board[i]);}
 function check(p){return wins.some(w=>w.every(i=>board[i]==p));}
-function end(t){document.getElementById("tttResult").innerText=t;over=true;}
+function end(t){document.getElementById("tttResult").innerText=t; over=true;}
 
-/* ===== QUIZ (7–9 standard, 100+ questions) ===== */
+/* ===== QUIZ ===== */
 let base=[
 ["The Earth revolves around the Sun",true],
 ["Water boils at 0°C",false],
@@ -222,7 +207,6 @@ let base=[
 ["Electricity flows through conductors",true]
 ];
 
-// Randomly create 100+ questions
 let q=[];
 while(q.length<100) q.push(base[Math.floor(Math.random()*base.length)]);
 let qi=0, sc=0;
@@ -239,4 +223,3 @@ function answer(a){
 
 </body>
 </html>
-
