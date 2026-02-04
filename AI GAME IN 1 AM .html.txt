@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Bujju AI Games</title>
+<style>
+body{font-family:Arial;text-align:center;background:#eef}
+button{padding:10px;margin:5px;font-size:16px}
+.game{display:none;margin-top:20px}
+table{margin:auto;border-collapse:collapse}
+td{width:60px;height:60px;border:2px solid black;font-size:28px;cursor:pointer}
+</style>
+</head>
+
+<body>
+
+<h1>🎮 Bujju’s AI Game Hub</h1>
+<p>School Project</p>
+
+<button onclick="show('number')">🔢 Guess My Number</button>
+<button onclick="show('chess')">♟️ Casual Chess</button>
+<button onclick="show('ttt')">❌⭕ Tic Tac Toe</button>
+<button onclick="show('quiz')">🧠 Quiz</button>
+
+<!-- ========== GUESS MY NUMBER ========== -->
+<div id="number" class="game">
+<h2>AI Guess My Number</h2>
+<p>Think of a number between <b>1 and 100</b></p>
+<h3 id="guess">50</h3>
+<button onclick="low()">Too Low</button>
+<button onclick="correct()">Correct</button>
+<button onclick="high()">Too High</button>
+</div>
+
+<!-- ========== CASUAL CHESS ========== -->
+<div id="chess" class="game">
+<h2>Casual Chess (You vs AI)</h2>
+<p>White = You | Black = AI</p>
+<table id="chessBoard"></table>
+</div>
+
+<!-- ========== TIC TAC TOE ========== -->
+<div id="ttt" class="game">
+<h2>Tic Tac Toe</h2>
+<table>
+<tr><td onclick="playTTT(0)"></td><td onclick="playTTT(1)"></td><td onclick="playTTT(2)"></td></tr>
+<tr><td onclick="playTTT(3)"></td><td onclick="playTTT(4)"></td><td onclick="playTTT(5)"></td></tr>
+<tr><td onclick="playTTT(6)"></td><td onclick="playTTT(7)"></td><td onclick="playTTT(8)"></td></tr>
+</table>
+<p id="tttResult"></p>
+</div>
+
+<!-- ========== QUIZ ========== -->
+<div id="quiz" class="game">
+<h2>Quiz (Class 8–9)</h2>
+<p id="question"></p>
+<button onclick="answer(true)">True</button>
+<button onclick="answer(false)">False</button>
+<p id="score"></p>
+</div>
+
+<script>
+/* MENU */
+function show(id){
+document.querySelectorAll('.game').forEach(g=>g.style.display="none");
+document.getElementById(id).style.display="block";
+}
+
+/* ========== GUESS MY NUMBER AI ========== */
+let lo=1, hi=100, g=50;
+function update(){g=Math.floor((lo+hi)/2);document.getElementById("guess").innerText=g;}
+function low(){lo=g+1;update();}
+function high(){hi=g-1;update();}
+function correct(){alert("🎉 AI guessed your number: "+g);}
+
+/* ========== CASUAL CHESS ========== */
+let chess=[
+["♜","♞","♝","♛","♚","♝","♞","♜"],
+["♟","♟","♟","♟","♟","♟","♟","♟"],
+["","","","","","","",""],
+["","","","","","","",""],
+["","","","","","","",""],
+["","","","","","","",""],
+["♙","♙","♙","♙","♙","♙","♙","♙"],
+["♖","♘","♗","♕","♔","♗","♘","♖"]
+];
+let sel=null;
+
+function drawChess(){
+let t="";
+for(let r=0;r<8;r++){
+t+="<tr>";
+for(let c=0;c<8;c++)
+t+=<td onclick="pick(${r},${c})">${chess[r][c]}</td>;
+t+="</tr>";
+}
+document.getElementById("chessBoard").innerHTML=t;
+}
+drawChess();
+
+function pick(r,c){
+if(!sel && chess[r][c]!=""){sel=[r,c];}
+else if(sel){
+chess[r][c]=chess[sel[0]][sel[1]];
+chess[sel[0]][sel[1]]="";
+sel=null;
+drawChess();
+setTimeout(aiChess,500);
+}
+}
+
+function aiChess(){
+let p=[];
+for(let r=0;r<8;r++)
+for(let c=0;c<8;c++)
+if(chess[r][c]!="")p.push([r,c]);
+let a=p[Math.floor(Math.random()*p.length)];
+let r=a[0],c=a[1];
+let nr=Math.max(0,Math.min(7,r+(Math.random()>0.5?1:-1)));
+let nc=Math.max(0,Math.min(7,c+(Math.random()>0.5?1:-1)));
+chess[nr][nc]=chess[r][c];
+chess[r][c]="";
+drawChess();
+}
+
+/* ========== TIC TAC TOE ========== */
+let board=["","","","","","","","",""];
+let over=false;
+const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+
+function playTTT(i){
+if(board[i]||over)return;
+board[i]="X";drawTTT();
+if(check("X")){end("🎉 You Win!");return;}
+aiTTT();
+if(check("O")){end("🤖 AI Wins!");return;}
+if(!board.includes(""))end("🤝 Draw!");
+}
+
+function aiTTT(){
+let e=board.map((v,i)=>v==""?i:null).filter(v=>v!=null);
+if(e.length)board[e[Math.floor(Math.random()*e.length)]]="O";
+drawTTT();
+}
+
+function drawTTT(){
+document.querySelectorAll("#ttt td").forEach((c,i)=>c.innerText=board[i]);
+}
+
+function check(p){return wins.some(w=>w.every(i=>board[i]==p));}
+function end(t){document.getElementById("tttResult").innerText=t;over=true;}
+
+/* ========== QUIZ (100+) ========== */
+let base=[
+["Speed of light is 3×10⁸ m/s",true],
+["Ohm’s law is V=IR",true],
+["RAM is permanent memory",false],
+["pH of acids is less than 7",true],
+["Binary number system uses base 2",true],
+["CPU is brain of computer",true],
+["Sound cannot travel in vacuum",true],
+["Water boils at 100°C",true],
+["LAN means Local Area Network",true],
+["Earth has two moons",false]
+];
+let q=[];
+while(q.length<100)q.push(base[Math.floor(Math.random()*base.length)]);
+let qi=0, sc=0;
+document.getElementById("question").innerText=q[0][0];
+
+function answer(a){
+if(a==q[qi][1])sc++;
+qi++;
+document.getElementById("question").innerText=q[qi][0];
+document.getElementById("score").innerText="Score: "+sc+"/"+qi;
+}
+</script>
+
+</body>
+</html>
